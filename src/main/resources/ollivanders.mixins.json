@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "package": "com.zundrel.ollivanders.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "ItemSwingMixin",
+	"ServerChatMixin"
+  ],
+  "client": [
+    
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

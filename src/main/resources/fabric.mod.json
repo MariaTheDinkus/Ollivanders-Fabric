@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "id": "ollivanders",
+  "version": "${version}",
+
+  "name": "Ollivanders",
+  "description": "A magic mod based in the Harry Potter universe.",
+  "authors": [
+    "Zundrel"
+  ],
+  "contact": {
+    "homepage": "https://zundrel.com/",
+    "sources": "https://github.com/Zundrel/Ollivanders-Fabric"
+  },
+
+  "license": "MIT",
+  "icon": "assets/ollivanders/icon.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.zundrel.ollivanders.Ollivanders"
+    ],
+	"client": [
+	  "com.zundrel.ollivanders.client.OllivandersClient"
+	]
+  },
+  "mixins": [
+    "ollivanders.mixins.json"
+  ],
+
+  "depends": {
+    "fabricloader": ">=0.4.0",
+    "fabric": "*"
+  },
+  "suggests": {
+    "flamingo": "*"
+  }
+}

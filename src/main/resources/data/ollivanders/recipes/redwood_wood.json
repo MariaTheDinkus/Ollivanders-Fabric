@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "bark",
+  "pattern": [
+    "##",
+    "##"
+  ],
+  "key": {
+    "#": {
+      "item": "ollivanders:redwood_log"
+    }
+  },
+  "result": {
+    "item": "ollivanders:redwood_wood",
+    "count": 3
+  }
+}
