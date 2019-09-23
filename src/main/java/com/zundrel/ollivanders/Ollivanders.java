@@ -1,11 +1,14 @@
 package com.zundrel.ollivanders;
 
+import com.zundrel.ollivanders.api.component.IPlayerComponent;
+import com.zundrel.ollivanders.api.utils.OllivandersComponents;
 import com.zundrel.ollivanders.common.entity.EntitySpellProjectile;
 import com.zundrel.ollivanders.common.events.CommonEventHandler;
 import com.zundrel.ollivanders.common.registry.*;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
+import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemGroup;
@@ -24,6 +27,7 @@ public class Ollivanders implements ModInitializer
     public static ItemGroup generalItemGroup = FabricItemGroupBuilder.build(new Identifier(MODID, "general"), () -> new ItemStack(ModItems.PHOENIX_FEATHER));
 
     public static final Identifier SPELL_PROJECTILE_PACKET = new Identifier(MODID, "spell_projectile_packet");
+    public static final Identifier POWER_LEVEL_PACKET = new Identifier(MODID, "power_level_packet");
 
     @Override
     public void onInitialize() {
@@ -57,6 +61,19 @@ public class Ollivanders implements ModInitializer
                 entity.setEntityId(entityId);
                 entity.setUuid(uuid);
                 ((ClientWorld) packetContext.getPlayer().getEntityWorld()).addEntity(entityId, entity);
+            });
+        }));
+
+        ServerSidePacketRegistry.INSTANCE.register(POWER_LEVEL_PACKET, ((packetContext, packetByteBuf) -> {
+            UUID uuid = packetByteBuf.readUuid();
+            int powerLevel = packetByteBuf.readInt();
+
+            packetContext.getTaskQueue().execute(() -> {
+                if (packetContext.getPlayer().getUuid().equals(uuid)) {
+                    IPlayerComponent playerComponent = OllivandersComponents.getPlayerComponent(packetContext.getPlayer());
+
+                    playerComponent.setPowerLevel(powerLevel);
+                }
             });
         }));
     }

@@ -3,6 +3,7 @@
   "package": "com.zundrel.ollivanders.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "GameRendererMixin",
     "ItemSwingMixin",
 	"ServerChatMixin"
   ],

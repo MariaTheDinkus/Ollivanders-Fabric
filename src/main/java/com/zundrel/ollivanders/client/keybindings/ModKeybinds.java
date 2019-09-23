@@ -4,6 +4,7 @@ import com.zundrel.ollivanders.Ollivanders;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.keybinding.FabricKeyBinding;
+import net.fabricmc.fabric.api.client.keybinding.KeyBindingRegistry;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
@@ -27,5 +28,8 @@ public class ModKeybinds {
                 GLFW.GLFW_KEY_EQUAL,
                 "Ollivanders"
         ).build();
+
+        KeyBindingRegistry.INSTANCE.register(DECREASE_POWER_LEVEL);
+        KeyBindingRegistry.INSTANCE.register(INCREASE_POWER_LEVEL);
     }
 }
