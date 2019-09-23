@@ -32,39 +32,41 @@ public class SpellHandler {
 
         player.getEntityWorld().playSound(null, player.x, player.y, player.z, SoundEvents.ENTITY_BLAZE_SHOOT, SoundCategory.PLAYERS, 1, 1.5F);
 
-        if (spell instanceof ISelfSpell) {
-            ISelfSpell selfSpell = (ISelfSpell) spell;
-            selfSpell.onSelf(usedPowerLevel, world, player);
-            selfSpell.advanceSpellLevel(player);
-        } else if (spell instanceof IRaytraceSpell) {
-            IRaytraceSpell raytraceSpell = (IRaytraceSpell) spell;
-            raytraceSpell.onHitBlock(usedPowerLevel, world, player, (BlockHitResult) raycast(player, 160));
-            raytraceSpell.advanceSpellLevel(player);
-        } else if (spell instanceof IProjectileSpell) {
-            IProjectileSpell projectileSpell = (IProjectileSpell) spell;
-            EntitySpellProjectile projectile = new EntitySpellProjectile(world, powerLevel, projectileSpell, player.x, player.y + player.getActiveEyeHeight(player.getPose(), player.getDimensions(player.getPose())), player.z, player, projectileSpell.shouldCollideFluid());
-            projectile.setProperties(player, player.pitch, player.yaw, 0, 1.25F, 0F);
-            world.spawnEntity(projectile);
-            projectile.sync();
-        } else if (spell instanceof IStationarySpell) {
-            IStationarySpell stationarySpell = (IStationarySpell) spell;
-            BlockHitResult blockHitResult = (BlockHitResult) raycast(player, 160);
-            BlockPos pos = stationarySpell.isOffset() ? blockHitResult.getBlockPos().offset(blockHitResult.getSide()) : blockHitResult.getBlockPos();
+        if (!world.isClient()) {
+            if (spell instanceof ISelfSpell) {
+                ISelfSpell selfSpell = (ISelfSpell) spell;
+                selfSpell.onSelf(usedPowerLevel, world, player);
+                selfSpell.advanceSpellLevel(player);
+            } else if (spell instanceof IRaytraceSpell) {
+                IRaytraceSpell raytraceSpell = (IRaytraceSpell) spell;
+                raytraceSpell.onHitBlock(usedPowerLevel, world, player, (BlockHitResult) raycast(player, 160));
+                raytraceSpell.advanceSpellLevel(player);
+            } else if (spell instanceof IProjectileSpell) {
+                IProjectileSpell projectileSpell = (IProjectileSpell) spell;
+                EntitySpellProjectile projectile = new EntitySpellProjectile(world, powerLevel, projectileSpell, player.x, player.y + player.getActiveEyeHeight(player.getPose(), player.getDimensions(player.getPose())), player.z, player, projectileSpell.shouldCollideFluid());
+                projectile.setProperties(player, player.pitch, player.yaw, 0, 1.25F, 0F);
+                world.spawnEntity(projectile);
+                projectile.sync();
+            } else if (spell instanceof IStationarySpell) {
+                IStationarySpell stationarySpell = (IStationarySpell) spell;
+                BlockHitResult blockHitResult = (BlockHitResult) raycast(player, 160);
+                BlockPos pos = stationarySpell.isOffset() ? blockHitResult.getBlockPos().offset(blockHitResult.getSide()) : blockHitResult.getBlockPos();
 
-            IWorldComponent worldComponent = OllivandersComponents.getWorldComponent(world);
-            if (stationarySpell.getCategory() != EnumSpellCategory.FLOO && worldComponent.getStationarySpell(pos) == null) {
-                if (!world.isAir(pos)) {
-                    worldComponent.addStationarySpell(new WorldSpell(stationarySpell, pos, stationarySpell.getRadius(), stationarySpell.getDuration()));
-                    playerComponent.addSpellLevel(stationarySpell.getName(), 1);
-                }
-            } else if (worldComponent.getFlooSpell(pos) == null && world.getBlockState(pos).getBlock() instanceof FireBlock && world.getBlockEntity(pos.up()) instanceof SignBlockEntity) {
-                SignBlockEntity signBlockEntity = (SignBlockEntity) world.getBlockEntity(pos.up());
+                IWorldComponent worldComponent = OllivandersComponents.getWorldComponent(world);
+                if (stationarySpell.getCategory() != EnumSpellCategory.FLOO && worldComponent.getStationarySpell(pos) == null) {
+                    if (!world.isAir(pos)) {
+                        worldComponent.addStationarySpell(new WorldSpell(stationarySpell, pos, stationarySpell.getRadius(), stationarySpell.getDuration()));
+                        playerComponent.addSpellLevel(stationarySpell.getName(), 1);
+                    }
+                } else if (worldComponent.getFlooSpell(pos) == null && world.getBlockState(pos).getBlock() instanceof FireBlock && world.getBlockEntity(pos.up()) instanceof SignBlockEntity) {
+                    SignBlockEntity signBlockEntity = (SignBlockEntity) world.getBlockEntity(pos.up());
 
-                if (signBlockEntity != null && signBlockEntity.text[0] != null) {
-                    Ollivanders.LOGGER.info(world.getBlockState(pos.up()).get(Properties.HORIZONTAL_FACING));
-                    Ollivanders.LOGGER.info(world.getBlockState(pos.up()).get(Properties.HORIZONTAL_FACING).getName());
-                    worldComponent.putFlooSpell(signBlockEntity.text[0].asString().replace(" ", "_"), new FlooWorldSpell(signBlockEntity.text[0].asString().replace(" ", "_"), signBlockEntity.text[0].asString(), stationarySpell, pos, world.getBlockState(pos.up()).get(Properties.HORIZONTAL_FACING).getName(), stationarySpell.getRadius()));
-                    playerComponent.addSpellLevel(stationarySpell.getName(), 1);
+                    if (signBlockEntity != null && signBlockEntity.text[0] != null) {
+                        Ollivanders.LOGGER.info(world.getBlockState(pos.up()).get(Properties.HORIZONTAL_FACING));
+                        Ollivanders.LOGGER.info(world.getBlockState(pos.up()).get(Properties.HORIZONTAL_FACING).getName());
+                        worldComponent.putFlooSpell(signBlockEntity.text[0].asString().replace(" ", "_"), new FlooWorldSpell(signBlockEntity.text[0].asString().replace(" ", "_"), signBlockEntity.text[0].asString(), stationarySpell, pos, world.getBlockState(pos.up()).get(Properties.HORIZONTAL_FACING).getName(), stationarySpell.getRadius()));
+                        playerComponent.addSpellLevel(stationarySpell.getName(), 1);
+                    }
                 }
             }
         }

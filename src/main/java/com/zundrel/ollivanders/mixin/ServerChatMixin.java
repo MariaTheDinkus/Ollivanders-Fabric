@@ -37,7 +37,7 @@ public abstract class ServerChatMixin implements ServerPlayPacketListener {
     private void executeCommand(String string_1) {}
 
     /**
-     * Changed onChatMessage to call a ServerChatCallback which can return a range for players to hear the message.
+     * @reason Changed onChatMessage to call a ServerChatCallback which can return a range for players to hear the message.
      * @author Zundrel
      */
     @Overwrite

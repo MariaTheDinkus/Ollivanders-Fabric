@@ -15,6 +15,8 @@ public class ModKeybinds {
     public static FabricKeyBinding INCREASE_POWER_LEVEL = null;
 
     public static void init() {
+        KeyBindingRegistry.INSTANCE.addCategory("Ollivanders");
+
         DECREASE_POWER_LEVEL = FabricKeyBinding.Builder.create(
                 new Identifier(Ollivanders.MODID, "decrease_power_level"),
                 InputUtil.Type.KEYSYM,

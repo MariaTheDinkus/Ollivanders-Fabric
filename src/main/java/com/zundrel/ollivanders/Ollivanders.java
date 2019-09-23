@@ -1,6 +1,8 @@
 package com.zundrel.ollivanders;
 
 import com.zundrel.ollivanders.api.component.IPlayerComponent;
+import com.zundrel.ollivanders.api.registries.SpellRegistry;
+import com.zundrel.ollivanders.api.spells.ISpell;
 import com.zundrel.ollivanders.api.utils.OllivandersComponents;
 import com.zundrel.ollivanders.common.entity.EntitySpellProjectile;
 import com.zundrel.ollivanders.common.events.CommonEventHandler;
@@ -27,6 +29,7 @@ public class Ollivanders implements ModInitializer
     public static ItemGroup generalItemGroup = FabricItemGroupBuilder.build(new Identifier(MODID, "general"), () -> new ItemStack(ModItems.PHOENIX_FEATHER));
 
     public static final Identifier SPELL_PROJECTILE_PACKET = new Identifier(MODID, "spell_projectile_packet");
+    public static final Identifier SPELL_PACKET = new Identifier(MODID, "spell_packet");
     public static final Identifier POWER_LEVEL_PACKET = new Identifier(MODID, "power_level_packet");
 
     @Override
@@ -61,6 +64,16 @@ public class Ollivanders implements ModInitializer
                 entity.setEntityId(entityId);
                 entity.setUuid(uuid);
                 ((ClientWorld) packetContext.getPlayer().getEntityWorld()).addEntity(entityId, entity);
+            });
+        }));
+
+        ClientSidePacketRegistry.INSTANCE.register(SPELL_PACKET, ((packetContext, packetByteBuf) -> {
+            ISpell spell = SpellRegistry.findSpell(packetByteBuf.readString());
+
+            packetContext.getTaskQueue().execute(() -> {
+                IPlayerComponent playerComponent = OllivandersComponents.getPlayerComponent(packetContext.getPlayer());
+
+                playerComponent.setSpell(spell);
             });
         }));
 

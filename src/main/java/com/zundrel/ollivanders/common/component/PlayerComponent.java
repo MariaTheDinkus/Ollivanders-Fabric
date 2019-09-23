@@ -1,5 +1,6 @@
 package com.zundrel.ollivanders.common.component;
 
+import com.zundrel.ollivanders.Ollivanders;
 import com.zundrel.ollivanders.api.OllivandersAPI;
 import com.zundrel.ollivanders.api.component.IPlayerComponent;
 import com.zundrel.ollivanders.api.cores.ICore;
@@ -10,13 +11,16 @@ import com.zundrel.ollivanders.api.spells.ISpell;
 import com.zundrel.ollivanders.api.utils.WandUtils;
 import com.zundrel.ollivanders.api.wands.IWandItem;
 import com.zundrel.ollivanders.api.woods.IWood;
+import io.netty.buffer.Unpooled;
 import nerdhub.cardinal.components.api.ComponentType;
+import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
+import net.minecraft.util.PacketByteBuf;
 
 import java.util.*;
 
@@ -114,9 +118,16 @@ public class PlayerComponent implements IPlayerComponent {
 
     @Override
     public void setSpell(ISpell spell) {
-        //PlayerSpellChangeEvent playerSpellChangeEvent = new PlayerSpellChangeEvent(player, this.spell, spell);
         this.spell = spell;
         markDirty();
+    }
+
+    @Override
+    public void syncSpell() {
+        PacketByteBuf passedData = new PacketByteBuf(Unpooled.buffer());
+        passedData.writeString(spell.getName());
+
+        ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, Ollivanders.SPELL_PACKET, passedData);
     }
 
     @Override

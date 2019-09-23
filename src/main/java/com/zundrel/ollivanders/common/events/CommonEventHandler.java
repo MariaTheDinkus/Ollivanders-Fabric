@@ -2,7 +2,6 @@ package com.zundrel.ollivanders.common.events;
 
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.zundrel.ollivanders.Ollivanders;
 import com.zundrel.ollivanders.api.component.IPlayerComponent;
 import com.zundrel.ollivanders.api.component.IWorldComponent;
 import com.zundrel.ollivanders.api.event.ItemSwingCallback;
@@ -48,7 +47,6 @@ public class CommonEventHandler {
                     stationarySpellObject.getSpell().onStationaryTick(world, stationarySpellObject, stationarySpellObject.getPosition());
 
                     if (stationarySpellObject.isDead()) {
-                        Ollivanders.LOGGER.info("Removed stationary spell.");
                         toRemove.add(i);
                     }
                 }
@@ -59,7 +57,6 @@ public class CommonEventHandler {
                     flooSpellObject.getSpell().onStationaryTick(world, flooSpellObject, flooSpellObject.getPosition());
 
                     if (flooSpellObject.isDead()) {
-                        Ollivanders.LOGGER.info("Removed stationary spell.");
                         flooToRemove.add(flooSpellObject.getName());
                     }
                 }
@@ -127,6 +124,7 @@ public class CommonEventHandler {
 
             if (SpellRegistry.isSpellVerbal(text.toLowerCase())) {
                 playerComponent.setSpell(SpellRegistry.findSpellVerbal(text.toLowerCase()));
+                playerComponent.syncSpell();
                 player.addChatMessage(new TranslatableText("wand.ollivanders.chosen"), true);
 
                 return 20;
@@ -148,6 +146,7 @@ public class CommonEventHandler {
                         player.getEntityWorld().playSound(null, player.x, player.y, player.z, SoundEvents.ENTITY_BLAZE_SHOOT, SoundCategory.PLAYERS, 1, 1.5F);
                         player.teleport(pos.getX(), pos.getY(), pos.getZ());
                         playerComponent.setSpell(null);
+                        playerComponent.syncSpell();
                         playerComponent.addSpellLevel("apparate", 1);
                         player.getEntityWorld().playSound(null, player.x, player.y, player.z, SoundEvents.ENTITY_BLAZE_SHOOT, SoundCategory.PLAYERS, 1, 1.5F);
 
