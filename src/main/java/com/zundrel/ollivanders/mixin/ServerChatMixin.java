@@ -69,7 +69,7 @@ public abstract class ServerChatMixin implements ServerPlayPacketListener {
                 World world = player.getEntityWorld();
                 ArrayList<PlayerEntity> playerEntities = (ArrayList<PlayerEntity>) world.getPlayers();
 
-                if (radius >= 0) {
+                if (radius > 0) {
                     for (PlayerEntity otherPlayer : playerEntities) {
                         if (WandUtils.compareCoordinatesDistance(player.getBlockPos(), otherPlayer.getBlockPos()) < 20) {
                             this.server.getPlayerManager().broadcastChatMessage(text_1, false);
