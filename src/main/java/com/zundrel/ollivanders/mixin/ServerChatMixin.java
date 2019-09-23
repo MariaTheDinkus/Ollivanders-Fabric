@@ -7,7 +7,6 @@ import net.minecraft.client.network.packet.ChatMessageS2CPacket;
 import net.minecraft.client.options.ChatVisibility;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.NetworkThreadUtils;
-import net.minecraft.network.Packet;
 import net.minecraft.network.listener.ServerPlayPacketListener;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
@@ -32,38 +31,32 @@ public abstract class ServerChatMixin implements ServerPlayPacketListener {
     private MinecraftServer server;
 
     @Shadow
-    public ServerPlayerEntity player;
-
-    @Shadow
     private int messageCooldown;
-
-    @Shadow
-    public void disconnect(Text text_1) {}
-
-    @Shadow
-    public void sendPacket(Packet<?> packet_1) {}
 
     @Shadow
     private void executeCommand(String string_1) {}
 
     /**
-     * Added a proper chat event into onChatMessage.
+     * Changed onChatMessage to call a ServerChatCallback which can return a range for players to hear the message.
      * @author Zundrel
      */
     @Overwrite
     public void onChatMessage(ChatMessageC2SPacket chatMessageC2SPacket_1) {
-        NetworkThreadUtils.forceMainThread(chatMessageC2SPacket_1, this, this.player.getServerWorld());
-        if (this.player.getClientChatVisibility() == ChatVisibility.HIDDEN) {
-            this.sendPacket(new ChatMessageS2CPacket((new TranslatableText("chat.cannotSend", new Object[0])).formatted(Formatting.RED)));
+        ServerPlayNetworkHandler serverPlayNetworkHandler = (ServerPlayNetworkHandler) (Object) this;
+        ServerPlayerEntity player = serverPlayNetworkHandler.player;
+        
+        NetworkThreadUtils.forceMainThread(chatMessageC2SPacket_1, serverPlayNetworkHandler, player.getServerWorld());
+        if (player.getClientChatVisibility() == ChatVisibility.HIDDEN) {
+            serverPlayNetworkHandler.sendPacket(new ChatMessageS2CPacket((new TranslatableText("chat.cannotSend", new Object[0])).formatted(Formatting.RED)));
         } else {
-            this.player.updateLastActionTime();
+            player.updateLastActionTime();
             String string_1 = chatMessageC2SPacket_1.getChatMessage();
             string_1 = StringUtils.normalizeSpace(string_1);
             int radius = ServerChatCallback.EVENT.invoker().interact(player, string_1);
 
             for(int int_1 = 0; int_1 < string_1.length(); ++int_1) {
                 if (!SharedConstants.isValidChar(string_1.charAt(int_1))) {
-                    this.disconnect(new TranslatableText("multiplayer.disconnect.illegal_characters", new Object[0]));
+                    serverPlayNetworkHandler.disconnect(new TranslatableText("multiplayer.disconnect.illegal_characters", new Object[0]));
                     return;
                 }
             }
@@ -71,7 +64,7 @@ public abstract class ServerChatMixin implements ServerPlayPacketListener {
             if (string_1.startsWith("/")) {
                 this.executeCommand(string_1);
             } else {
-                Text text_1 = new TranslatableText("chat.type.text", new Object[]{this.player.getDisplayName(), string_1});
+                Text text_1 = new TranslatableText("chat.type.text", new Object[]{player.getDisplayName(), string_1});
 
                 World world = player.getEntityWorld();
                 ArrayList<PlayerEntity> playerEntities = (ArrayList<PlayerEntity>) world.getPlayers();
@@ -88,8 +81,8 @@ public abstract class ServerChatMixin implements ServerPlayPacketListener {
             }
 
             this.messageCooldown += 20;
-            if (this.messageCooldown > 200 && !this.server.getPlayerManager().isOperator(this.player.getGameProfile())) {
-                this.disconnect(new TranslatableText("disconnect.spam", new Object[0]));
+            if (this.messageCooldown > 200 && !this.server.getPlayerManager().isOperator(player.getGameProfile())) {
+                serverPlayNetworkHandler.disconnect(new TranslatableText("disconnect.spam", new Object[0]));
             }
 
         }

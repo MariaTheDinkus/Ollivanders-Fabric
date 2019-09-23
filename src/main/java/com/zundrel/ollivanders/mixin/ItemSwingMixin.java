@@ -17,18 +17,4 @@ public class ItemSwingMixin {
         if (livingEntity instanceof PlayerEntity)
             ItemSwingCallback.EVENT.invoker().interact((PlayerEntity) livingEntity);
     }
-
-//    /**
-//     * Added a proper swing event into method_12511.
-//     * @author Zundrel
-//     * @reason Activates the ServerChatCallback.
-//     */
-//    @Overwrite
-//    public void method_12511(ServerPlayPacketListener serverPlayPacketListener_1) {
-//        serverPlayPacketListener_1.onHandSwing(new HandSwingC2SPacket(hand));
-//        if (serverPlayPacketListener_1 instanceof ServerPlayNetworkHandler) {
-//            ServerPlayNetworkHandler serverPlayNetworkHandler = (ServerPlayNetworkHandler) serverPlayPacketListener_1;
-//            ActionResult result = ItemSwingCallback.EVENT.invoker().interact(serverPlayNetworkHandler.player);
-//        }
-//    }
 }
