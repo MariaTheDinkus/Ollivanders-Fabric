@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(GameRenderer.class)
-public class GameRendererMixin {
+public class MixinPowerBar {
     @Inject(method = "render", slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;render(F)V")), at = @At(value = "INVOKE", ordinal = 0))
     private void renderOverlay(float var1, long nanoTime, boolean var4, CallbackInfo callbackInfo) {
         MinecraftClient mc = MinecraftClient.getInstance();

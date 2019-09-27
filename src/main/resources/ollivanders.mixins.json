@@ -3,12 +3,12 @@
   "package": "com.zundrel.ollivanders.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "GameRendererMixin",
-    "ItemSwingMixin",
-	"ServerChatMixin"
+    "MixinItemSwing",
+	"MixinServerChat"
   ],
   "client": [
-    
+    "MixinPowerBar",
+    "MixinClientPlayNetworkHandler"
   ],
   "injectors": {
     "defaultRequire": 1

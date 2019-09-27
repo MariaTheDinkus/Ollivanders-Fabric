@@ -56,10 +56,6 @@ public class PowerBarScreen extends Screen {
         blit(0, 0, 0, 0, BAR_WIDTH, BAR_HEIGHT);
 
         if (playerComponent != null && playerComponent.getSpell() != null) {
-            Ollivanders.LOGGER.info(playerComponent.getPowerLevel());
-            Ollivanders.LOGGER.info(playerComponent.getSpell().getMaxSpellPower(player));
-            Ollivanders.LOGGER.info(playerComponent.getWandMaxPowerLevel());
-
             int clampedPowerLevel = Math.min(playerComponent.getPowerLevel(), Math.min(playerComponent.getSpell().getMaxSpellPower(player), playerComponent.getWandMaxPowerLevel()));
             int maxPowerLevel = Math.min(playerComponent.getSpell().getMaxSpellPower(player), playerComponent.getWandMaxPowerLevel());
             int differencePowerLevel = playerComponent.getPowerLevel() - clampedPowerLevel;

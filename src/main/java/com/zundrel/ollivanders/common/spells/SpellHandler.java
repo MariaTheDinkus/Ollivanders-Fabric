@@ -46,7 +46,6 @@ public class SpellHandler {
                 EntitySpellProjectile projectile = new EntitySpellProjectile(world, powerLevel, projectileSpell, player.x, player.y + player.getActiveEyeHeight(player.getPose(), player.getDimensions(player.getPose())), player.z, player, projectileSpell.shouldCollideFluid());
                 projectile.setProperties(player, player.pitch, player.yaw, 0, 1.25F, 0F);
                 world.spawnEntity(projectile);
-                projectile.sync();
             } else if (spell instanceof IStationarySpell) {
                 IStationarySpell stationarySpell = (IStationarySpell) spell;
                 BlockHitResult blockHitResult = (BlockHitResult) raycast(player, 160);

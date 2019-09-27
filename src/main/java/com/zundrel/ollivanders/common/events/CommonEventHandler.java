@@ -124,7 +124,6 @@ public class CommonEventHandler {
 
             if (SpellRegistry.isSpellVerbal(text.toLowerCase())) {
                 playerComponent.setSpell(SpellRegistry.findSpellVerbal(text.toLowerCase()));
-                playerComponent.syncSpell();
                 player.addChatMessage(new TranslatableText("wand.ollivanders.chosen"), true);
 
                 return 20;
@@ -146,7 +145,6 @@ public class CommonEventHandler {
                         player.getEntityWorld().playSound(null, player.x, player.y, player.z, SoundEvents.ENTITY_BLAZE_SHOOT, SoundCategory.PLAYERS, 1, 1.5F);
                         player.teleport(pos.getX(), pos.getY(), pos.getZ());
                         playerComponent.setSpell(null);
-                        playerComponent.syncSpell();
                         playerComponent.addSpellLevel("apparate", 1);
                         player.getEntityWorld().playSound(null, player.x, player.y, player.z, SoundEvents.ENTITY_BLAZE_SHOOT, SoundCategory.PLAYERS, 1, 1.5F);
 

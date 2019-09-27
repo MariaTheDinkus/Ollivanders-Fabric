@@ -25,7 +25,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import java.util.ArrayList;
 
 @Mixin(ServerPlayNetworkHandler.class)
-public abstract class ServerChatMixin implements ServerPlayPacketListener {
+public abstract class MixinServerChat implements ServerPlayPacketListener {
     @Shadow
     @Final
     private MinecraftServer server;

@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(LivingEntity.class)
-public class ItemSwingMixin {
+public class MixinItemSwing {
     @Inject(method = "swingHand", at = @At("HEAD"), cancellable = false)
     public void swingHand(final Hand hand, CallbackInfo ci) {
         LivingEntity livingEntity = (LivingEntity) (Object) this;

@@ -1,26 +1,21 @@
 package com.zundrel.ollivanders.common.entity;
 
-import com.zundrel.ollivanders.Ollivanders;
 import com.zundrel.ollivanders.api.spells.IProjectileSpell;
 import com.zundrel.ollivanders.api.spells.ISpell;
 import com.zundrel.ollivanders.common.registry.ModEntities;
-import io.netty.buffer.Unpooled;
-import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
-import net.fabricmc.fabric.api.server.PlayerStream;
+import net.minecraft.client.network.packet.EntitySpawnS2CPacket;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.thrown.ThrownEntity;
+import net.minecraft.network.Packet;
 import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.particle.ParticleTypes;
-import net.minecraft.util.PacketByteBuf;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-
-import java.util.stream.Stream;
 
 public class EntitySpellProjectile extends ThrownEntity
 {
@@ -65,23 +60,6 @@ public class EntitySpellProjectile extends ThrownEntity
         super(ModEntities.SPELL_PROJECTILE, world);
 
         this.collideFluids = collideFluids;
-    }
-
-    public void sync() {
-        Stream<PlayerEntity> watchingPlayers = PlayerStream.watching(getEntityWorld(), getBlockPos());
-
-        PacketByteBuf passedData = new PacketByteBuf(Unpooled.buffer());
-        passedData.writeDouble(x);
-        passedData.writeDouble(y);
-        passedData.writeDouble(z);
-        passedData.writeFloat(pitch);
-        passedData.writeFloat(yaw);
-        passedData.writeInt(getEntityId());
-        passedData.writeUuid(getUuid());
-
-        watchingPlayers.forEach(playerEntity -> {
-            ServerSidePacketRegistry.INSTANCE.sendToPlayer(playerEntity, Ollivanders.SPELL_PROJECTILE_PACKET, passedData);
-        });
     }
 
     @Override
@@ -154,4 +132,9 @@ public class EntitySpellProjectile extends ThrownEntity
 	{
 		stationary = value;
 	}
+
+    @Override
+    public Packet<?> createSpawnPacket() {
+        return new EntitySpawnS2CPacket(this);
+    }
 }

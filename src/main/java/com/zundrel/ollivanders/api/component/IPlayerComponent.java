@@ -31,8 +31,6 @@ public interface IPlayerComponent extends EntitySyncedComponent {
 
     void setSpell(ISpell spell);
 
-    void syncSpell();
-
     HashMap<String, Integer> getSpellLevels();
 
     int getSpellLevel(String spell);
