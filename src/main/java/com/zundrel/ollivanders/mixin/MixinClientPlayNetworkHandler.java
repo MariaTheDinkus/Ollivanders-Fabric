@@ -19,24 +19,22 @@ public class MixinClientPlayNetworkHandler {
     }
 
     @Inject(
-        method = {"onEntitySpawn"},
-        at = {@At("HEAD")}
+            method = {"onEntitySpawn"},
+            at = {@At("HEAD")}
     )
     public void onEntitySpawnPacket(EntitySpawnS2CPacket packet, CallbackInfo ci) {
         this.packet = packet;
     }
 
     @ModifyVariable(
-        method = {"onEntitySpawn"},
-        at = @At(value = "STORE"),
-        ordinal = 0
+            method = {"onEntitySpawn"},
+            at = @At(value = "STORE"),
+            name = "entity_40"
     )
-    public Entity onEntitySpawn(Entity oldObject) {
-        Entity entity = oldObject;
-        if (oldObject == null) {
-            entity = packet.getEntityTypeId().create(((ClientPlayNetworkHandler) (Object) this).getWorld());
-            entity.setPosition(packet.getX(), packet.getY(), packet.getZ());
-        }
+    public Entity onEntitySpawn(Entity prevEntity) {
+        Entity entity = packet.getEntityTypeId().create(((ClientPlayNetworkHandler) (Object) this).getWorld());
+        entity.setPosition(packet.getX(), packet.getY(), packet.getZ());
+
         return entity;
     }
 }
